@@ -1,0 +1,1100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0040)http://www.thinkphp.cn/document/308.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> -->
+	<title>ThinkPHP函数详解：I方法 - ThinkPHP框架</title>
+	<meta name="keywords" content="函数">
+	<meta name="description" content="">
+	<meta property="wb:webmaster" content="06779971d6009b5a">
+	<link rel="alternate" type="application/rss+xml" title="ThinkPHP官方资讯" href="http://www.thinkphp.cn/rss/index.xml">
+	<link href="http://www.thinkphp.cn/Public/favicon.ico" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/base.css" media="all">
+	<link rel="stylesheet" type="text/css" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/header.css" media="all">
+	<link rel="stylesheet" type="text/css" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/module.css" media="all">
+	<link rel="stylesheet" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/style.css">
+	<link rel="stylesheet" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/img.css">
+	<link rel="stylesheet" type="text/css" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/prettify.css">
+	<script src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/ca-pub-2076739524120221.js.下载"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/jquery-1.7.2.min.js.下载"></script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/prettify.js.下载"></script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/jquery.zclip.min.js.下载"></script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/jquery.ThinkBox.min.js.下载"></script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/Validform_v5.3.2.js.下载"></script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/jquery.masonry.min.js.下载"></script>
+	<script type="text/javascript">
+	$(function(){
+		//翻页快捷键
+		$(document).keyup(function(event){
+			if(event.keyCode == 37){
+				$('.prev span').click();
+			}else if(event.keyCode == 39){
+				$('.next span').click();
+			}
+		});
+
+		//阻止事件的冒泡
+		$(':text,textarea').keyup(function(event){
+			event.stopPropagation();
+		});
+
+		$("#header-search").hover(function(){
+			$("#search-sort-list").show();
+		},function(){
+			$("#search-sort-list").hide();
+		});
+		//搜索选项选择
+		$("#search-sort-list li").click(function(){
+			var curTxt = $(this).text();
+			var type = $(this).val();
+			$('#search').val(type);
+			$(this).addClass("current").siblings().removeClass("current");
+			$(this).parent().siblings(".search-sort-txt").text(curTxt);
+			$(this).parent().hide();
+		});
+
+
+		//入口图标菜单
+		$(".entrance").mouseenter(function(){
+			var userMenu = $(this).children(".user-menu");
+			userMenu.show();
+			clearTimeout(userMenu.data("timeout"));
+		}).mouseleave(function(){
+			var userMenu = $(this).children(".user-menu");
+			userMenu.data("timeout") && clearTimeout(userMenu.data("timeout"));
+			userMenu.data("timeout", setTimeout(function(){userMenu.hide()}, 100));
+		});
+
+		$(".user-menu").mouseover(function(){
+			clearTimeout($(this).data("timeout"));
+			$(this).removeData("timeout");
+		});
+
+
+		//返回顶部
+		function gotoTop(min_height){
+		    //预定义返回顶部的html代码，它的css样式默认为不显示
+		    var gotoTop_html = '<div id="gotoTop">返回顶部</div>';
+		    //将返回顶部的html代码插入页面上id为page的元素的末尾
+		    $("body").append(gotoTop_html);
+		    $("#gotoTop").click(//定义返回顶部点击向上滚动的动画
+		        function(){ $('html,body').animate({scrollTop:0},700);
+		    }).hover(//为返回顶部增加鼠标进入的反馈效果，用添加删除css类实现
+		        function(){ $(this).addClass("hover");},
+		        function(){ $(this).removeClass("hover");
+		    });
+
+		    //获取页面的最小高度，无传入值则默认为600像素
+		    min_height ? min_height = min_height : min_height = 600;
+		    //为窗口的scroll事件绑定处理函数
+		    $(window).scroll(function(){
+		        //获取窗口的滚动条的垂直位置
+		        var s = $(window).scrollTop();
+		        //当窗口的滚动条的垂直位置大于页面的最小高度时，让返回顶部元素渐现，否则渐隐
+		        if( s > min_height){
+		            $("#gotoTop").fadeIn(100);
+		        }else{
+		            $("#gotoTop").fadeOut(200);
+		        };
+		    });
+		};
+		gotoTop();
+		//代码高亮
+		$('code').each(function(){
+	        $(this).data('think-source', (this.innerText || this.textContent).replace(/ /g, ' '));
+	    });
+	    prettyPrint();
+	    $('code').each(function(){
+	        var self = $(this);
+	        var copy = $('<div><span>复制代码</span></div>')
+	            .addClass('think-copy')
+	            .appendTo(self)
+	            .zclip({
+	                'path':'/Public/common/zclip/ZeroClipboard.swf',
+	                'afterCopy' : function(){
+	                    $.ThinkBox.success('复制成功');
+	                },
+	                'copy': function(){
+	                    return self.closest('code').data('think-source');
+	                }
+	            });
+	    });
+	  	//每隔一段时间ajax加载提醒
+		setInterval("ajaxGetNotify()", parseInt(120) * 1000);
+		//修改用户名
+		$(document).delegate('.change-name','submit', function(){
+			var ele = $(this);
+			$.post('/user/changeUsername',
+				{'username' : ele.find('input[name=username]').val()},
+				function(data){
+					if(data.status){
+						box.hide();
+						$.ThinkBox.success(data.info);
+					}else{
+						$.ThinkBox.error(data.info);
+					}
+				},
+				'json'
+			);
+			return false;
+		});
+	})
+
+	function ajaxGetNotify(){
+  		$.get('/notify/getNotifyCount',
+			{},
+			function(data){
+				$('#review_num').text(data.review_count);
+				$('#letter_num').text(data.letter_count);
+				if(data.num != 0){
+					$('#all_notify').html("<em>"+data.num+"</em>");
+				}else{
+					$('#all_notify').html("");
+				}
+			},
+			'json'
+		);
+	}
+	var box;
+	</script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/common.js.下载"></script>
+	<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/checkSyncLogin.html"></script>
+<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/ea0cb5324242b850e"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/ad196de4c105c1d8be"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/ad6b7d22ed07ed248d"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/e997c2acdc76d56ad"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/ad371631b55214bd30"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/adbcc8b2582eedc4f3"></script><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/ee4f5262d5b1e937b"></script><link rel="preload" href="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/integrator.js.下载" as="script"><script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/integrator.js.下载"></script><style type="text/css">.think_default_text a:hover{
+       border: 0;
+}</style><style type="text/css">.thinkad_default_images{
+
+}
+.thinkad_default_images a:hover{
+        border: 0;
+}
+</style><style type="text/css">.thinkad_default_images{
+
+}
+.thinkad_default_images a:hover{
+        border: 0;
+}
+</style><style type="text/css">.thinkad_default_images{
+
+}
+.thinkad_default_images a:hover{
+        border: 0;
+}
+</style><style type="text/css">.thinkad_default_images{
+
+}
+.thinkad_default_images a:hover{
+        border: 0;
+}
+</style></head>
+<body>
+	<!-- 头部 -->
+	<div class="header">
+		<div class="hd-main cf">
+			<!-- logo -->
+			<h3 class="logo"><a href="http://www.thinkphp.cn/" title="返回首页"></a></h3>
+			<!-- /logo -->
+
+			<!-- 主导航 -->
+			<ul class="main-nav">
+				<li><a href="http://www.thinkphp.cn/">首页</a></li>
+				<li><a href="http://www.thinkphp.cn/down.html">下载</a></li>
+				<li><a href="http://www.thinkphp.cn/extend/index.html">扩展</a></li>
+				<li><a href="http://www.topthink.com/products.html" target="app">应用</a></li>
+				<li class="current"><a href="http://www.thinkphp.cn/document/index.html">教程</a></li>
+				<li><a href="http://www.thinkphp.cn/code/index.html">代码</a></li>
+				<li><a href="http://www.topthink.com/group/1525.html" target="case">案例</a></li>
+				<li><a href="http://www.topthink.com/topics.html" target="topic">资讯</a></li>
+				<li><a href="http://www.thinkphp.cn/topic/index.html">讨论</a></li>
+			</ul>
+			<script type="text/javascript">
+            (function(){
+                //导航选中
+                var url = location.pathname, navg = $('.main-nav li');
+                if(url == '/' || url == '/index'){
+                    navg.eq(0).addClass('current');
+                }else if(!url.indexOf('/down')){
+                    navg.eq(1).addClass('current');
+                }else if(!url.indexOf('/extend')){
+                    navg.eq(2).addClass('current');
+                }else if(!url.indexOf('/app')){
+                    navg.eq(3).addClass('current');
+                }else if(!url.indexOf('/info')){
+                    if(!url.indexOf('/info/document') || !url.indexOf('/info/add/cate_id/36') || !url.indexOf('/info/zhuanti')){
+                        navg.eq(4).addClass('current');
+                    }else{
+                        navg.eq(7).addClass('current');
+                    }
+                }else if(!url.indexOf('/code')){
+                    navg.eq(5).addClass('current');
+                }else if(!url.indexOf('/case')){
+                    navg.eq(6).addClass('current');
+                }else if(!url.indexOf('/topic')){
+                    navg.eq(8).addClass('current');
+                }else if(!url.indexOf('/document')){
+                    navg.eq(4).addClass('current');
+                }
+            })()
+            </script>
+			<!-- /主导航 -->
+
+			<div class="header-bar">
+				<!-- 搜索 -->
+				<form action="http://www.thinkphp.cn/Search/" method="post" class="search cf">
+					<div id="header-search" class="search-sort">
+						<span class="search-sort-txt">全部</span><em></em>						<input type="hidden" name="type" id="search" value="10">
+						<ul id="search-sort-list" class="search-sort-list">
+							<li value="10">全部</li>
+							<li value="0">资讯</li>
+    						<li value="1">下载</li>
+    						<li value="2">讨论</li>
+    						<li value="6">代码</li>
+    						<li value="3">BUG</li>
+    						<li value="4">建议</li>
+    						<li value="5">更新</li>
+                            <li value="7">应用</li>
+						</ul>
+					</div>
+					<input type="hidden" name="time" value="0">
+					<input type="text" name="name" class="search-input" x-webkit-speech="">
+					<a class="search-btn" onclick="$(this).parent().submit();">搜索</a>
+				</form>
+				<!-- /搜索 -->
+				<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/getInfo.html"></script><div class="entrance">	<a class="unlogin" href="http://www.thinkphp.cn/member/login.html">		<b class="unlogin-ic"></b>		<i class="entr-icon"></i>	</a>	<ul class="user-menu set-l">		<li><a href="http://www.thinkphp.cn/member/login.html">登录</a></li>		<li><a href="http://www.thinkphp.cn/Member/register.html">注册</a></li>	</ul></div>
+			</div>
+		</div>
+	</div>
+	<div class="changeName" style="display:none;">
+		<form action="http://www.thinkphp.cn/user/changeUsername" method="post" class="change-name">
+			<div class="error-tips"> 系统检测到您的用户名不符合规范：<span></span> </div>
+			<label class="lab">用户名</label>
+			<input type="text" class="text" name="username" datatype="*1-16" errormsg="用户名不超过16个字节" nullmsg="用户名不能为空">
+			<input type="submit" value="提交" class="btn">
+		</form>
+	</div>
+
+<!-- 主体 -->
+<div class="main cf">
+	<!-- 左边 -->
+	<div class="wrapper">
+		<!-- 详情内容 -->
+		<div class="box detail-box">
+			<!-- 标签 -->
+																					<!-- /标签 -->
+
+			<!-- 标题栏 -->
+			<div class="detail-hd">
+				<div class="t-head cf">
+					<!-- 标题名称 -->
+					<h2>ThinkPHP函数详解：I方法</h2>
+					<!-- /标题名称 -->
+
+					<!-- 圆形翻页按钮 -->
+					<div class="turn">
+						
+	<a class="prev" href="http://www.thinkphp.cn/document/311.html" title="上一篇：CURD方法盘点：field方法"></a>		<a class="dir" href="http://www.thinkphp.cn/info/document.html" title="返回目录"></a>
+	<a class="next" href="http://www.thinkphp.cn/document/285.html" title="下一篇：说说ThinkPHP3.1.3版本的特性"></a>
+					</div>
+					<!-- /圆形翻页按钮 -->
+				</div>
+				<div class="t-foot">
+					<span>浏览：335886</span>
+					<!-- 发布日期 -->
+					<span>发布日期：2013/06/01</span>
+					<!-- /发布日期 -->
+					<!-- 分类 -->
+					<span>分类：文档教程</span>					<!-- /分类 -->
+					<!-- 关键字 -->
+					<span>关键字： <a href="http://www.thinkphp.cn/info/tag/name/%E5%87%BD%E6%95%B0.html">函数</a>  </span>					<!-- /关键字 -->
+
+					<input type="hidden" value="3" id="editbtn_user_id">
+<input type="hidden" value="308" id="editbtn_article_id">
+<input type="hidden" value="Document" id="editbtn_article_module">
+<script type="text/javascript">
+//ajax获取文章编辑按钮
+$(function(){
+	function getEditBtn(){
+		var $user_id = $('#editbtn_user_id').val();
+		if($user_id != ''){
+			$.get('/member/getEditBtn',
+				{
+					'user_id' : $user_id,
+					'article_id' : $('#editbtn_article_id').val(),
+					'article_module' : $('#editbtn_article_module').val()
+				},
+				function(data){
+					$('.t-foot').append(data.info);
+					$('#hot_review_top').find('.comment-hd').append(data.cancelBest);
+				},
+				'json'
+			);
+		}
+	}
+	getEditBtn();
+
+	$('#hot_review_top').delegate('#cancelBest', 'click', function(event){
+		$.get($(this).attr('href'),
+			{},
+			function(data){
+				if(data.status){
+					$.ThinkBox.success(data.info);
+					setTimeout(function(){window.location.reload();},1500);
+				}else{
+					$.ThinkBox.error(data.info);
+				}
+			},
+			'json'
+		);
+		return false;
+	});
+
+	//敏感操作前的提示框
+    $(document).delegate('.operate', 'click', function(event){
+        var ele = $(this);
+        var box = $.ThinkBox.confirm(
+                '确定执行该操作吗？',
+                {
+                    'ok' : function(){
+                        box.hide();
+                        var action = ele.data('action');
+                        var param = ele.data('param');
+                        $.get(
+                        	action,
+                        	{},
+                        	function(data){
+                        		if(data.status == 1){
+                        			$.ThinkBox.success(data.info);
+                        			setTimeout(function(){window.location.reload();},2000);
+                        		}else{
+                        			$.ThinkBox.error(data.info);
+                        		}
+                        	},
+                        	'json'
+                        );
+                    },
+                    'drag' : true,
+                    'cancel' : function(){box.hide();}
+                }
+        );
+        return false;
+    });
+})
+</script>
+				</div>
+			</div>
+			<!-- /标题栏 -->
+
+			<!-- 内容介绍 -->
+			<div class="detail-bd">
+			<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/client.js.下载"></script>
+			
+				<div class="art-cnt"><b>ThinkPHP的I方法是3.1.3版本新增的，如果你是之前的3.*版本的话，可以直接参考使用<a href="http://www.thinkphp.cn/document/117.html" target="_blank">3.1快速入门教程系列的变量部分</a>。</b><h2>概述</h2>正如你所见到的一样，I方法是ThinkPHP众多单字母函数中的新成员，其命名来自于英文Input（输入），主要用于更加方便和安全的获取系统输入变量，可以用于任何地方，用法格式如下：<br>
+<b>I('变量类型.变量名',['默认值'],['过滤方法'])</b><br>
+变量类型是指请求方式或者输入类型，包括：<table border="0" cellspacing="1" cellpadding="0">  <tbody><tr><th>变量类型</th><th>含义</th></tr>  <tr><td>get</td><td>获取GET参数</td></tr>  <tr><td>post</td><td>获取POST参数</td></tr>  <tr><td>param</td><td>自动判断请求类型获取GET、POST或者PUT参数</td></tr>  <tr><td>request</td><td>获取REQUEST&nbsp;参数</td></tr>  <tr><td>put</td><td>获取PUT&nbsp;参数</td></tr>  <tr><td>session</td><td>获取&nbsp;$_SESSION&nbsp;参数</td></tr>  <tr><td>cookie</td><td>获取&nbsp;$_COOKIE&nbsp;参数</td></tr>  <tr><td>server</td><td>获取&nbsp;$_SERVER&nbsp;参数</td></tr>  <tr><td>globals</td><td>获取&nbsp;$GLOBALS参数</td></tr></tbody></table>注意：变量类型不区分大小写。<br>
+变量名则严格区分大小写。<br>
+默认值和过滤方法均属于可选参数。<br>
+<br><h2>用法</h2>我们以GET变量类型为例，说明下I方法的使用：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">echo&nbsp;I</span><span class="pun">(</span><span class="str">'get.id'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;相当于&nbsp;$_GET['id']</span></li><li class="L1"><span class="pln"> echo&nbsp;I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;相当于&nbsp;$_GET['name']</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_1" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=82&amp;height=29" wmode="transparent"></div></code>支持默认值：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">echo&nbsp;I</span><span class="pun">(</span><span class="str">'get.id'</span><span class="pun">,</span><span class="lit">0</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;如果不存在$_GET['id']&nbsp;则返回0</span></li><li class="L1"><span class="pln"> echo&nbsp;I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">,</span><span class="str">''</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;如果不存在$_GET['name']&nbsp;则返回空字符串</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_2" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_2" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_2" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=82&amp;height=29" wmode="transparent"></div></code>采用方法过滤：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">echo&nbsp;I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">,</span><span class="str">''</span><span class="pun">,</span><span class="str">'htmlspecialchars'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;采用htmlspecialchars方法对$_GET['name']&nbsp;进行过滤，如果不存在则返回空字符串</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_3" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_3" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_3" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=82&amp;height=29" wmode="transparent"></div></code>支持直接获取整个变量类型，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'get.'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;获取整个$_GET&nbsp;数组</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_4" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_4" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_4" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=4&amp;width=82&amp;height=29" wmode="transparent"></div></code>用同样的方式，我们可以获取post或者其他输入类型的变量，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'post.name'</span><span class="pun">,</span><span class="str">''</span><span class="pun">,</span><span class="str">'htmlspecialchars'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;采用htmlspecialchars方法对$_POST['name']&nbsp;进行过滤，如果不存在则返回空字符串</span></li><li class="L1"><span class="pln"> I</span><span class="pun">(</span><span class="str">'session.user_id'</span><span class="pun">,</span><span class="lit">0</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;获取$_SESSION['user_id']&nbsp;如果不存在则默认为0</span></li><li class="L2"><span class="pln"> I</span><span class="pun">(</span><span class="str">'cookie.'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;获取整个&nbsp;$_COOKIE&nbsp;数组</span></li><li class="L3"><span class="pln"> I</span><span class="pun">(</span><span class="str">'server.REQUEST_METHOD'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;获取&nbsp;$_SERVER['REQUEST_METHOD']&nbsp;</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_5" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_5" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_5" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=5&amp;width=82&amp;height=29" wmode="transparent"></div></code>param变量类型是框架特有的支持自动判断当前请求类型的变量获取方式，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">echo&nbsp;I</span><span class="pun">(</span><span class="str">'param.id'</span><span class="pun">);</span><span class="pln">&nbsp;</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_6" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_6" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_6" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=6&amp;width=82&amp;height=29" wmode="transparent"></div></code>如果当前请求类型是GET，那么等效于 $_GET['id']，如果当前请求类型是POST或者PUT，那么相当于获取 $_POST['id'] 或者 PUT参数id。<br>
+并且param类型变量还可以用数字索引的方式获取URL参数（必须是PATHINFO模式参数有效，无论是GET还是POST方式都有效），例如：<br>
+当前访问URL地址是 <code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">http</span><span class="pun">:</span><span class="com">//serverName/index.php/New/2013/06/01&nbsp;</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_7" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_7" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_7" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=7&amp;width=82&amp;height=29" wmode="transparent"></div></code>那么我们可以通过<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">echo&nbsp;I</span><span class="pun">(</span><span class="str">'param.1'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;输出2013</span></li><li class="L1"><span class="pln"> echo&nbsp;I</span><span class="pun">(</span><span class="str">'param.2'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;输出06</span></li><li class="L2"><span class="pln"> echo&nbsp;I</span><span class="pun">(</span><span class="str">'param.3'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;输出01</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_8" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_8" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_8" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=8&amp;width=82&amp;height=29" wmode="transparent"></div></code>事实上，param变量类型的写法可以简化为：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'id'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;等同于&nbsp;I('param.id')</span></li><li class="L1"><span class="pln"> I</span><span class="pun">(</span><span class="str">'name'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;等同于&nbsp;I('param.name')</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_9" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_9" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_9" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=9&amp;width=82&amp;height=29" wmode="transparent"></div></code><h2>变量过滤</h2>使用I方法的时候 变量其实经过了两道过滤，首先是全局的过滤，全局过滤是通过配置VAR_FILTERS参数，这里一定要注意，3.1版本之后，VAR_FILTERS参数的过滤机制已经更改为采用array_walk_recursive方法递归过滤了，主要对过滤方法的要求是必须引用返回，所以这里设置htmlspecialchars是无效的，你可以自定义一个方法，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="kwd">function</span><span class="pln">&nbsp;filter_default</span><span class="pun">(&amp;</span><span class="pln">$value</span><span class="pun">){</span></li><li class="L1"><span class="pln"> &nbsp;&nbsp;&nbsp;&nbsp;$value&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;htmlspecialchars</span><span class="pun">(</span><span class="pln">$value</span><span class="pun">);</span></li><li class="L2"><span class="pln"> </span><span class="pun">}</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_10" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_10" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_10" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=10&amp;width=82&amp;height=29" wmode="transparent"></div></code>然后配置：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="str">'VAR_FILTERS'</span><span class="pun">=&gt;</span><span class="str">'filter_default'</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_11" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_11" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_11" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=11&amp;width=82&amp;height=29" wmode="transparent"></div></code>如果需要进行多次过滤，可以用：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="str">'VAR_FILTERS'</span><span class="pun">=&gt;</span><span class="str">'filter_default,filter_exp'</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_12" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_12" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_12" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=12&amp;width=82&amp;height=29" wmode="transparent"></div></code>filter_exp方法是框架内置的安全过滤方法，用于防止利用模型的EXP功能进行注入攻击。<br>
+<br>
+因为VAR_FILTERS参数设置的是全局过滤机制，而且采用的是递归过滤，对效率有所影响，所以，我们更建议直接对获取变量过滤的方式，除了在I方法的第三个参数设置过滤方法外，还可以采用配置DEFAULT_FILTER参数的方式设置过滤，事实上，该参数的默认设置是：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="str">'DEFAULT_FILTER'</span><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pun">=&gt;</span><span class="pln">&nbsp;</span><span class="str">'htmlspecialchars'</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_13" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_13" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_13" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=13&amp;width=82&amp;height=29" wmode="transparent"></div></code>也就说，I方法的所有获取变量都会进行htmlspecialchars过滤，那么：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;等同于&nbsp;htmlspecialchars($_GET['name'])</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_14" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_14" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_14" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=14&amp;width=82&amp;height=29" wmode="transparent"></div></code>同样，该参数也可以支持多个过滤，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="str">'DEFAULT_FILTER'</span><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pun">=&gt;</span><span class="pln">&nbsp;</span><span class="str">'strip_tags,htmlspecialchars'</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_15" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_15" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_15" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=15&amp;width=82&amp;height=29" wmode="transparent"></div></code><code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;等同于&nbsp;htmlspecialchars(strip_tags($_GET['name']))</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_16" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_16" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_16" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=16&amp;width=82&amp;height=29" wmode="transparent"></div></code>如果我们在使用I方法的时候 指定了过滤方法，那么就会忽略DEFAULT_FILTER的设置，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">echo&nbsp;I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">,</span><span class="str">''</span><span class="pun">,</span><span class="str">'strip_tags'</span><span class="pun">);</span><span class="pln">&nbsp;</span><span class="com">//&nbsp;等同于&nbsp;strip_tags($_GET['name'])</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_17" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_17" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_17" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=17&amp;width=82&amp;height=29" wmode="transparent"></div></code>I方法的第三个参数如果传入函数名，则表示调用该函数对变量进行过滤并返回（在变量是数组的情况下自动使用array_map进行过滤处理），否则会调用PHP内置的filter_var方法进行过滤处理，例如：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'post.email'</span><span class="pun">,</span><span class="str">''</span><span class="pun">,</span><span class="pln">FILTER_VALIDATE_EMAIL</span><span class="pun">);</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_18" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_18" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_18" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=18&amp;width=82&amp;height=29" wmode="transparent"></div></code>表示 会对$_POST['email'] 进行 格式验证，如果不符合要求的话，返回空字符串。<br>
+（关于更多的验证格式，可以参考 <a href="http://cn2.php.net/manual/zh/function.filter-var.php" target="_blank">官方手册的filter_var用法</a>。）<br>
+或者可以用下面的字符标识方式：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'post.email'</span><span class="pun">,</span><span class="str">''</span><span class="pun">,</span><span class="str">'email'</span><span class="pun">);</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_19" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_19" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_19" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=19&amp;width=82&amp;height=29" wmode="transparent"></div></code>可以支持的过滤名称必须是filter_list方法中的有效值（不同的服务器环境可能有所不同），可能支持的包括：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="kwd">int</span></li><li class="L1"><span class="pln"> </span><span class="kwd">boolean</span></li><li class="L2"><span class="pln"> </span><span class="kwd">float</span></li><li class="L3"><span class="pln"> validate_regexp</span></li><li class="L4"><span class="pln"> validate_url</span></li><li class="L5"><span class="pln"> validate_email</span></li><li class="L6"><span class="pln"> validate_ip</span></li><li class="L7"><span class="pln"> </span><span class="kwd">string</span></li><li class="L8"><span class="pln"> stripped</span></li><li class="L9"><span class="pln"> encoded</span></li><li class="L0"><span class="pln"> special_chars</span></li><li class="L1"><span class="pln"> unsafe_raw</span></li><li class="L2"><span class="pln"> email</span></li><li class="L3"><span class="pln"> url</span></li><li class="L4"><span class="pln"> number_int</span></li><li class="L5"><span class="pln"> number_float</span></li><li class="L6"><span class="pln"> magic_quotes</span></li><li class="L7"><span class="pln"> callback</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_20" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_20" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_20" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=20&amp;width=82&amp;height=29" wmode="transparent"></div></code>在有些特殊的情况下，我们不希望进行任何过滤，即使DEFAULT_FILTER已经有所设置，可以使用：<code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pln">I</span><span class="pun">(</span><span class="str">'get.name'</span><span class="pun">,</span><span class="str">''</span><span class="pun">,</span><span class="pln">NULL</span><span class="pun">);</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_21" style="position: absolute; left: 605px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_21" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_21" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=21&amp;width=82&amp;height=29" wmode="transparent"></div></code>一旦过滤参数设置为NULL，即表示不再进行任何的过滤。<div class="da_word"><think id="ad196de4c105c1d8be" parse="1" style="display: block; overflow: hidden;"><div style="border-top:1px solid #D4D4D4;margin-top:10px;padding:12px 6px">
+<b>【推广】</b> <a href="https://e.topthink.com/api/go/ec34217f6d305d7d1" target="_blank">【选型推荐】0基础1小时建站，满足多种建站需求</a><br><b>【推广】</b> <a href="https://e.topthink.com/api/go/ad_840ca7e569ef831c" target="_blank">ThinkPHP5.0 入门必读系列 [ 官方出品 ]</a><br></div></think></div></div>
+			</div>
+			<!-- /内容介绍 -->
+		</div>
+		<!-- /详情内容 -->
+
+		<div class="aw720">
+		
+		<think id="ad6b7d22ed07ed248d" parse="1" style="display: block; width: 728px; height: 90px; overflow: hidden;"><div class="thinkad_default_images">
+        <a href="https://e.topthink.com/api/go/e1818fbf22a8bc451" title="阿里云" target="_blank"><img width="728" height="90" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/TB1jO96SpXXXXahXXXXXXXXXXXX-728-90.jpg" alt="阿里云"></a></div></think>
+		</div>
+
+		<!-- 最佳评论(只有讨论有) -->
+		
+		<!-- /最佳评论(只有讨论有) -->
+
+		<!--选项卡显隐块-->
+		<div id="tabbar" class="box tabbar">
+			<!-- 选项卡导航 -->
+			<div class="tab-nav cf">
+				
+				<span class="item selected" data-target="comment">评论（<span class="review-count">75</span>）</span>
+				<span class="item" data-target="similar">相关</span>			</div>
+			<!-- /选项卡导航 -->
+
+			<!-- 内容 -->
+			<div id="tab-wrap" class="tab-wrap">
+				<!-- 应用摘要 -->
+				
+				<!-- /应用摘要 -->
+
+				<!-- 评论 -->
+				
+					
+<div class="tab-comment item-content" id="comment" style="display: block;">
+    <!-- <div class="tab-title">
+        评论（<span class="review-count">0</span>）
+    </div> -->
+    
+    <div class="cmt-box">
+        <div class="cmt-item review_item_list"><a class="avatar" user_id="268213" href="http://www.thinkphp.cn/u/268213.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80.gif"></a> <div class="comment-hd cf"><span class="username">奔波中成长</span><span class="commment-time">01月14日</span></div><div class="comment-bd" id="214367"><div class="cmt-txt">tp做的响应式网站     <a href="http://microsoftlinkedin.net/" target="_blank">http://microsoftlinkedin.net</a></div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="147452" href="http://www.thinkphp.cn/u/147452.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(1).gif"></a> <div class="comment-hd cf"><span class="username">chick</span><span class="commment-time">10月16日</span></div><div class="comment-bd" id="206473"><div class="cmt-txt"> thinkphp讨论组 QQ群：218338648 </div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="315828" href="http://www.thinkphp.cn/u/315828.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(2).gif"></a> <div class="comment-hd cf"><span class="username">505831001</span><span class="commment-time">10月12日</span></div><div class="comment-bd" id="206118"><div class="cmt-txt">收藏了，对TP框架的字母函数全部要熟悉一下，方便使用。</div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="292048" href="http://www.thinkphp.cn/u/292048.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(3).gif"></a> <div class="comment-hd cf"><span class="username">cpphp</span><span class="commment-time">08月11日</span></div><div class="comment-bd" id="201549"><div class="cmt-txt">不错，感谢。感谢大家来我博客交流 www.3maio.com</div></div><div class="cmt-item reply-item" id="205733"><a class="avatar" user_id="105047" href="http://www.thinkphp.cn/u/105047.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(4).gif"></a><div class="comment-hd cf"><a class="reply-btn" href="javascript:;" reply="201549" at-user="true">回复<i></i></a><span class="username">路后哥</span><span class="commment-time">10月07日</span></div><div class="comment-bd"><div>3秒真男人</div></div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="194755" href="http://www.thinkphp.cn/u/194755.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(5).gif"></a> <div class="comment-hd cf"><span class="username">lucn30</span><span class="commment-time">2016年08月08日</span></div><div class="comment-bd" id="168497"><div class="cmt-txt">I方法 怎么接受参数  /或%2F，会当成分割过滤掉。</div></div><div class="cmt-item reply-item" id="172175"><a class="avatar" user_id="194755" href="http://www.thinkphp.cn/u/194755.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(5).gif"></a><div class="comment-hd cf"><a class="reply-btn" href="javascript:;" reply="168497" at-user="true">回复<i></i></a><span class="username">lucn30</span><span class="commment-time">2016年09月14日</span></div><div class="comment-bd"><div>用urlsafe_b64decode()函数</div></div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="220739" href="http://www.thinkphp.cn/u/220739.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(6).gif"></a> <div class="comment-hd cf"><span class="username">distenis</span><span class="commment-time">2016年06月06日</span></div><div class="comment-bd" id="161839"><div class="cmt-txt"><code class="prettyprint linenums lang-php prettyprinted" style=""><ol class="linenums"><li class="L0"><span class="pun">不错</span></li></ol><div class="think-copy"><span>复制代码</span></div><div class="zclip" id="zclip-ZeroClipboardMovie_22" style="position: absolute; left: 542px; top: -1px; width: 82px; height: 29px; z-index: 99;"><embed id="ZeroClipboardMovie_22" src="/Public/common/zclip/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="82" height="29" name="ZeroClipboardMovie_22" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=22&amp;width=82&amp;height=29" wmode="transparent"></div></code></div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="193660" href="http://www.thinkphp.cn/u/193660.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(7).gif"></a> <div class="comment-hd cf"><span class="username">飞羽之兴</span><span class="commment-time">2016年04月27日</span></div><div class="comment-bd" id="158447"><div class="cmt-txt">请问大神   thinphp RC3   中的   I  方法是否还存在</div></div><div class="cmt-item reply-item" id="158486"><a class="avatar" user_id="193660" href="http://www.thinkphp.cn/u/193660.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(7).gif"></a><div class="comment-hd cf"><a class="reply-btn" href="javascript:;" reply="158447" at-user="true">回复<i></i></a><span class="username">飞羽之兴</span><span class="commment-time">2016年04月27日</span></div><div class="comment-bd"><div>查阅了下 手册    现在  改为  input   方法了</div></div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="55328" href="http://www.thinkphp.cn/u/55328.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(8).gif"></a> <div class="comment-hd cf"><span class="username">zeroone</span><span class="commment-time">2016年04月16日</span></div><div class="comment-bd" id="157058"><div class="cmt-txt">3.1.3特殊情况 取消过滤 第三个参数设置为NULL，然并卵 还是被过滤。看源代码有问题</div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="83054" href="http://www.thinkphp.cn/u/83054.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(9).gif"></a> <div class="comment-hd cf"><span class="username">Programmers</span><span class="commment-time">2016年04月01日</span></div><div class="comment-bd" id="155514"><div class="cmt-txt">为什么I('name','default')，当name不存在的时候不能输出default？（非要加上get，或post才可）？</div></div></div><div class="cmt-item review_item_list"><a class="avatar" user_id="181189" href="http://www.thinkphp.cn/u/181189.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(10).gif"></a> <div class="comment-hd cf"><span class="username">慕容木木</span><span class="commment-time">2016年03月24日</span></div><div class="comment-bd" id="154594"><div class="cmt-txt">如果I（'name'），是指类型是get还是post，或者说默认不填的类型是什么？？</div></div><div class="cmt-item reply-item" id="154596"><a class="avatar" user_id="3" href="http://www.thinkphp.cn/u/thinkphp.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(11).gif"></a><div class="comment-hd cf"><a class="reply-btn" href="javascript:;" reply="154594" at-user="true">回复<i></i></a><span class="username">thinkphp<i class="icon-approve" title="认证用户"></i></span><span class="commment-time">2016年03月24日</span></div><div class="comment-bd"><div>默认就是param类型 自动识别</div></div></div><div class="cmt-item reply-item" id="154922"><a class="avatar" user_id="181189" href="http://www.thinkphp.cn/u/181189.html" target="_blank"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(10).gif"></a><div class="comment-hd cf"><a class="reply-btn" href="javascript:;" reply="154594" at-user="true">回复<i></i></a><span class="username">慕容木木</span><span class="commment-time">2016年03月28日</span></div><div class="comment-bd"><div>回复 <a class="at" href="javascript:void(0);" user_id="3">thinkphp</a> : 这也是不是开销也大啊</div></div></div></div><div class="more-comment">
+            后面还有<span id="more_count">65</span>条评论，<a href="javascript:get_review();">点击查看&gt;&gt;</a>
+        </div>
+        <form action="http://www.thinkphp.cn/review/update.html" method="post" class="cmt-item" id="reviewForm" style="display:none;" autocomplete="off">
+        	<input type="hidden" name="app_name" value="">
+        	<input type="hidden" name="author_id" value="3">
+        	<input type="hidden" name="title" value="ThinkPHP函数详解：I方法">
+        	<input type="hidden" value="25" name="model_id">
+    		<input type="hidden" value="308" name="record_id">
+        	<input type="hidden" value="0" name="review_id">
+        	<span class="avatar">
+                <img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/44_44.png" alt="" id="my_avatar">
+            </span>
+        	<div class="comment-bd" id="review">
+        		<div class="cmt-textarea">
+					<textarea name="content" placeholder="我也来说两句..."></textarea>
+				</div>
+			</div>
+            <div class="comment-ft">
+				<input type="submit" class="cmt-btn" value="评论 [ Ctrl+Enter ]">
+				<span class="c-tips">评论支持使用[code][/code]标签添加代码</span>
+			</div>
+            <!-- <span class="syn">同步到：<a href="#">新浪微博</a><a href="#">腾讯微博</a></span> -->
+        </form>
+        <div class="login-tip" style="">
+        	您需要登录后才可以评论 <a href="http://www.thinkphp.cn/member/login.html">登录</a> | <a href="http://www.thinkphp.cn/member/register.html">立即注册</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(function(){	
+				
+	    $('.think-article code').each(function(){
+	        $(this).data('think-source', (this.innerText || this.textContent).replace(/ /g, ' '));
+	    });
+	    
+        $('#reviewForm').Validform({
+        	tiptype:function(msg,o,cssctl){
+        		if(o.type == 2){
+        			$.ThinkBox.success(msg);
+        			setTimeout(function(){window.location.reload();},2000);
+        		}
+        		if(o.type == 3){
+        			$.ThinkBox.error(msg,{'delayClose':3000});
+        		}
+        	},
+        	ajaxPost:true
+        });
+	    var form = $('.cmt-item:last');
+	    //插入回复表单
+	    $('.cmt-box').delegate('.reply-btn','click',function(event){
+	        var parent = $(this).closest('.cmt-item');
+	        //写入对应回复ID
+	        form.find(':hidden[name=review_id]').val($(this).attr('reply'));
+	        var textarea = parent.append(form).find('textarea');
+	        //对回复回复的处理
+	        if($(this).attr('at-user') == 'true'){
+				var username = $(this).parent().find('.username').text();
+				textarea.text('回复 @' + username + ' : ');
+		    }else{
+		    	textarea.text('');
+			}
+	        moveEnd(textarea.get(0));
+	        event.stopPropagation();
+	    })
+	    $('.cmt-box').delegate('.cmt-item','click',function(event){
+	        $(this).has('form').length && event.stopPropagation();
+	    })
+	    //点击评论框以外的地方，重置评论表单
+	    $(document).click(function(){
+		    if(form.find(':hidden[name=review_id]').val() != 0){
+		    	$('.more-comment').after($('.cmt-box').find('form'));
+		        form.find(':hidden[name=review_id]').val(0);
+		        form.find('textarea').text('');
+			}
+	    })
+	    //快捷键提交评论
+	    $("#reviewForm").find('textarea').on("keydown", function(e){
+	    	e.stopPropagation();
+	    	if(e.ctrlKey && e.which ==13){
+	    		$('#reviewForm').submit();
+	    	}
+	    });
+	    //删除评论绑定事件
+	    $('.cmt-box').delegate('.delete-review','click',function(event){
+	    	var self = $(this);
+		    var id = self.attr('review_id');
+		    $.ThinkBox.confirm('确定删除吗？',
+				{'cancel' : function(){this.hide();},
+				 'ok' : function(){
+					this.hide();
+					$.post(
+						'/review/deleteReview',
+						{'id':id},
+						function(data){
+							if(data.status == 1){
+								$.ThinkBox.success(data.info);
+								setTimeout(function(){window.location.reload();}, 2000);
+							}else{
+								$.ThinkBox.error(data.info);
+							}
+						},
+						'json'
+					);
+				 },
+				 'drag' : true,
+				 'modal' : true
+				}
+			 );
+		    
+		});
+	})
+	
+	function parse_content(str) {
+	    str = str.replace(/\[code\]((?:.|\n|\r)+?)\[\/code\]/ig, function(_str, code){
+	        code = code.replace(/ /g, '&nbsp;').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+	        return '<code class="prettyprint linenums lang-php">'+ code +'</code>';
+	    });
+	    str = str.replace(/&amp;/g, '&')
+	    		.replace(/(http(s?):\/\/(?:[A-za-z0-9-]+\.)+[A-za-z]{2,4}(?:[\/\?#][\/=\?%\-&~`@[\]\':+!\.#\w]*)?)/ig, 
+	            '<a href="$1" target="_blank">$1</a>'
+	        );
+	    return str.replace(/([^>])[\r\n]+/g, '$1<br>\n');
+	}
+	
+	//JS U方法的实现
+	//U('member/login')
+	//U('member/register')
+	//U('member') //设置
+	//TODO:目前只是简单的分隔符替换
+	function U(url){
+	    if(!url)return;
+	    var sep = '/',suffix = '.html',root='/';
+	    url = url.replace(/download\/detail\/id\/(\d+)/, 'down/$1')
+	            .replace(/download|extend\/download\/id\/(\d+)/, 'download/$1')
+	            .replace(/(\w+)\/detail\/id\/(\d+)/, '$1/$2'); 
+	    return root + url.replace(/\//g,sep)+suffix;
+	}
+
+	//将光标移动到textarea末尾
+	function moveEnd(obj){
+		obj.focus(); 
+	    var len = obj.value.length;
+	    if (document.selection) {
+	        var sel = obj.createTextRange(); 
+	        sel.moveStart('character',len); 
+	        sel.collapse(); 
+	        sel.select(); 
+	    } else if (typeof obj.selectionStart == 'number' && typeof obj.selectionEnd == 'number') {
+	        obj.selectionStart = obj.selectionEnd = len; 
+	    } 
+	}
+
+	//设置是否显示最佳评论
+	var author_id = $(':input[name=author_id]').val();
+	function setReviewPosStr(data,id,user_id,pos){
+		var a = '<a class="reply-btn" href="javascript:;" reply="'+id+'">回复<i></i></a>';
+		if(pos != 3 && (data.is_admin || data.self_user_id == user_id)){
+			a += '<a class="fr delete-review" review_id="'+id+'" href="javascript:void(0);">删除</a>';
+		}
+		if(!data.is_login){
+			return '';
+		}
+		if(data.set_best){
+			if(!data.is_admin){
+				if(data.is_self){
+					//不存在最佳评论，且当前文章是自己的文章
+					if(!data.has_best && data.is_self){
+						a +='<a class="fr set-review-pos" review_id="'+id+'" href="javascript:void(0);">最佳答案</a>';
+					}
+				}	
+			}else{
+				if(!data.has_best){
+					a +='<a class="fr set-review-pos" review_id="'+id+'" href="javascript:void(0);">最佳答案</a>';
+				}
+			}
+		}
+		return a;
+	}
+
+	//设置最佳评论功能
+	setReviewPos();
+	function setReviewPos(){
+		  $('a[class~=set-review-pos]').live('click',function(){
+				$.post('/review/setReviewPos.html',
+					{review_id:$(this).attr('review_id'),'author_id':$('#reviewForm').find('input[name=author_id]').val()},
+					function(data){
+					if(data.status == 1){
+						$.ThinkBox.success(data.info);
+		    			setTimeout(function(){window.location.reload();},1500);
+					}else{
+						$.ThinkBox.error(data.info,{close:false});
+					}
+				},'json');
+			});
+	}
+	//评论加载
+    var page = 1;
+    function get_review(){
+        $.get(
+            U('review/getlist'),
+            {
+                'model' : $(':input[name=model_id]').val(), 
+                'record' : $(':input[name=record_id]').val(), 
+                'num' : 10, 
+                'page' : page,
+                'user_id': $(':input[name=author_id]').val(),
+                'avatar' : 'middle'
+            },
+            function(data){
+            	//是否登录做对应展示
+        		if(data.avatar != ""){
+            		$('#my_avatar').attr('src', data.avatar);
+        			$('#reviewForm').show();
+        		}else{
+        			$('#my_avatar').attr('src', '/avatar/44_44.png');
+        			$('.login-tip').show();
+        		}
+                $.isNumeric(data.count) && $('.review-count').text(data.count);
+                $('#comment_count').text(data.count);
+                $('.c-comment > .cib').text(data.count);
+                if(data.list && (typeof data.list == 'object')){
+                    $.each(data.list, function(i, v){
+                        var html = '<div class="cmt-item review_item_list">'+
+                            '<a class="avatar" user_id="'+v.user_id+'" href="/u/'+v.domain+'.html" target="_blank">'+
+                                '<img src="'+ v.avatar+'" />'+
+                            '</a> '+
+                            '<div class="comment-hd cf">';                                     	
+                            html += setReviewPosStr(data,v.id,v.user_id,v.pos);
+                            html += '<span class="username">' + v.username + v.ico + '</span>' + 
+                            '<span class="commment-time">' + v.review_time + '</span>'+
+                            '</div>'+
+                            '<div class="comment-bd" id="' + v.id + '">'+
+                            '<div class="cmt-txt">'+parse_content(v.content) + '</div>'
+                            '</div>'+
+                        '</div>';
+                        $('.more-comment').before(html);
+                    });
+                    page = page+1;
+                }
+                if(data.review && (typeof data.review == 'object')){
+                    $.each(data.review, function(i, v){
+                        var html = '<div class="cmt-item reply-item" id="' + v.id + '">'+
+                            '<a class="avatar" user_id="'+v.user_id+'" href="/u/'+v.domain+'.html" target="_blank">'+
+                                '<img src="'+ v.avatar+'" />'+
+                            '</a>'+
+                            '<div class="comment-hd cf"><a class="reply-btn" href="javascript:;" reply="'+v.review_id+'" at-user="true">回复<i></i></a>';
+                        if(v.pos != 3 && (data.is_admin || data.self_user_id == v.user_id)){
+                        	html += '<a class="fr delete-review" review_id="'+v.id+'" href="javascript:void(0);">删除</a>';
+                		}
+                        html += '<span class="username">' + v.username + v.ico + '</span>' + 
+                            '<span class="commment-time">' + v.review_time + '</span>'+
+                            '</div>'+
+                            '<div class="comment-bd">'+
+                            '<div>' + parse_content(v.content) + '</div>'+
+                            '</div>'
+                        '</div>';
+                        $('#' + v.review_id).after(html);
+                    });
+                }
+                var review_count = data.count;
+                if($('.review_item_list').length < review_count){
+                    $('#more_count').text(review_count - $('.review_item_list').length);
+                    $('.more-comment').show();
+                }else{
+                    $('.more-comment').hide();
+                }
+                /* 代码高亮 */
+                prettyPrint();
+                $('#comment code').each(function(){
+                    $(this).data('think-source', this.innerText || this.textContent);
+                });
+                
+                $('#comment code').each(function(){
+                    var self = $(this);
+                    var copy = $('<div><span>复制代码</span></div>')
+                        .addClass('think-copy')
+                        .appendTo(self)
+                        .zclip({
+                            'path':'/Public/common/zclip/ZeroClipboard.swf',
+                            'afterCopy' : function(){
+                                $.ThinkBox.success('复制成功');
+                            },
+                            'copy': function(){
+                                return $(this).closest('code').data('think-source');
+                            }
+                        });
+                });
+                
+            },
+            'json'
+        );
+        
+    }
+    get_review();
+
+    $('.cmt-textarea textarea').keyup(function(){
+        var self = $(this);
+        var speed = Math.max(self.get(0).scrollHeight, 48);
+        self.height(speed);
+
+    });
+    
+</script>
+				
+				<!-- /评论 -->
+
+				<!-- 同类推荐 -->
+				<div class="tab-similar item-content" id="similar" style="display: none;">
+					<!-- <div class="tab-title">同类推荐</div> -->
+					<ul class="similar-list">
+						
+	<li>
+			<div class="info">
+				<span>thinkphp_dy<i class="icon-manager" title="管理员"></i></span>
+				<span class="time">12-16</span>
+			</div>
+			<a href="http://www.thinkphp.cn/info/459.html">互联世界，编程人生——程序员嘉年华活动</a>
+		</li><li>
+			<div class="info">
+				<span>thinkphp<i class="icon-approve" title="认证用户"></i></span>
+				<span class="time">06-03</span>
+			</div>
+			<a href="http://www.thinkphp.cn/document/312.html">ThinkPHP函数详解：F方法</a>
+		</li><li>
+			<div class="info">
+				<span>thinkphp<i class="icon-approve" title="认证用户"></i></span>
+				<span class="time">06-02</span>
+			</div>
+			<a href="http://www.thinkphp.cn/info/309.html">ThinkPHP函数详解系列</a>
+		</li><li>
+			<div class="info">
+				<span>thinkphp</span>
+				<span class="time">09-25</span>
+			</div>
+			<a href="http://www.thinkphp.cn/document/148.html">ThinkPHP函数详解：L方法</a>
+		</li><li>
+			<div class="info">
+				<span>thinkphp</span>
+				<span class="time">09-17</span>
+			</div>
+			<a href="http://www.thinkphp.cn/document/140.html">ThinkPHP函数详解：N方法</a>
+		</li>
+					</ul>
+				</div>
+				<!-- /同类推荐 -->
+			</div>
+			<!-- /内容 -->
+			<think id="e997c2acdc76d56ad" parse="1" style="display: block; width: 720px; height: 89px; overflow: hidden;"><div class="thinkad_default_images">
+        <a href="https://e.topthink.com/api/go/ee60411abd1fb213f" title="微信小程序" target="_blank"><img width="720" height="89" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/5aa61e08ecc68.jpg" alt="微信小程序"></a></div></think>
+			<!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:720px;height:89px"
+     data-ad-client="ca-pub-2076739524120221"
+     data-ad-slot="5295221043"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script> -->
+		</div>
+		<!--/选项卡显隐块-->
+	</div>
+	<!-- /左边 -->
+
+	<!-- 边栏 -->
+	<div class="sidebar">
+		<!-- 浏览，评论，赞，下载等 -->
+		
+			<div class="sn-wrap">
+				<div class="count-box count-3 cf">
+					<dl class="count-item c-view " id="collect">
+						<dt class="cit"><i></i>收藏</dt>
+						<dd class="cib" id="collect_count">130</dd>
+						<input type="hidden" id="collect_model_id" value="25">
+<input type="hidden" id="collect_record_id" value="308">
+<input type="hidden" id="collect_title" value="ThinkPHP函数详解：I方法">
+<script type="text/javascript">
+$(function(){
+	$("#collect").bind("click", function(){
+		var text = $("#collect").find('.cit').text();
+		if(text == '已收藏'){
+			return false;
+		}
+		$.post(
+			"/collect/addCollecter",
+			{
+				"model_id" : $("#collect_model_id").val(),
+				"record_id" : $("#collect_record_id").val(),
+				"title" : $("#collect_title").val(),
+				'author_id' : $('input[name=author_id]').val(),
+				'app_name' : $('input[name=app_name]').val()
+			},
+			function(data){
+				if(data.status == 1){
+					var count = $('#collect_count').text();
+					$("#collect").addClass('sc-disabled');
+					$("#collect").find('.cit').html('<i></i>已收藏');
+					$('#collect_count').text(parseInt(count) + 1);
+					
+					$.ThinkBox.success(data.info);
+				}else{
+					$.ThinkBox.error(data.info);
+				}
+			},
+			"json"
+		);
+	});
+	//获取被收藏的人数,和我是否收藏了
+	function getCollectCount(){
+		$.post(
+			"/collect/getCollectCount",
+			{
+				"model" : $("#collect_model_id").val(),
+				"id" : $("#collect_record_id").val()
+			},
+			function(data){
+				if(data.status == 1){
+					$('#collect_count').text(data.data);
+					if(data.info == 1){
+						$("#collect").find('.cit').html('<i></i>已收藏');
+						$("#collect").addClass('sc-disabled');
+					}
+				}else{
+					$.ThinkBox.error(data.info);
+				}
+			},
+			"json"
+		);
+	}
+	getCollectCount();
+})
+</script>
+					</dl>
+
+					<!--赞 -->
+					<dl class="count-item c-like support">
+						<dt class="cit" record_id="308">
+							<i></i>赞
+						</dt>
+						<dd class="cib support_num">41</dd>
+						<script type="text/javascript" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/support.js.下载"></script>
+						<input type="hidden" id="su_model_id" value="25">
+					</dl>
+					<!--赞 -->
+
+					<!-- 评论 -->
+					<a class="count-item c-cmt" href="javascript:;">
+						<span class="cit"><i></i>评论</span>
+						<span class="cib review-count">75</span>
+					</a>
+					<!-- /评论 -->
+				</div>
+			</div>
+		
+		<!-- /浏览，评论，赞，下载等 -->
+
+		<!-- 发布者信息 -->
+		
+			<div class="box promulgator">
+				<div class="avatar" user_id="3"><a href="http://www.thinkphp.cn/u/thinkphp.html" target="blank" title="进入Ta的主页"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/80_80(11).gif"></a></div>
+				<div class="name">
+					<span class="send"><i class="icon-send"></i></span>
+					thinkphp					<i class="icon-approve" title="认证用户"></i>				</div>
+				<span class="mr">积分：35591</span>
+				<span>等级：LV9</span>
+			</div>
+		
+		<!-- /发布者信息 -->
+
+        <div class="box da-link">
+            <think id="ad371631b55214bd30" parse="1" style="display: block; width: 250px; height: 120px; overflow: hidden;"><div class="thinkad_default_images">
+        <a href="https://e.topthink.com/api/go/eb2bd8924113b4204" title="小程序" target="_blank"><img width="250" height="120" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/5a950bef764c7.jpg" alt="小程序"></a></div></think>
+        </div>
+
+		<!-- 分享到 -->
+		
+			<div class="box share">
+				<span>分享到：</span>
+				<a href="javascript:;" class="sina" title="新浪微博"></a>
+				<a href="javascript:;" class="tencent" title="腾讯微博"></a>
+			</div>
+		
+		<!-- /分享到 -->
+
+		<!-- a6广告 -->
+		<div class="a6">
+		<think id="adbcc8b2582eedc4f3" parse="1" style="display: block; width: 250px; height: 250px; overflow: hidden;"><div class="thinkad_default_images">
+        <a href="https://e.topthink.com/api/go/ef28f256a91aecfb9" title="TPShop" target="_blank"><img width="250" height="250" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/5a5e9e0ba02ab.jpg" alt="TPShop"></a></div></think>
+			<!-- <script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+<!-- 正方形 -->
+<!-- <ins class="adsbygoogle"
+     style="display:inline-block;width:250px;height:250px"
+     data-ad-client="ca-pub-2076739524120221"
+     data-ad-slot="8248687447"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({ });
+</script> -->
+		</div>
+		<!-- /a6广告 -->
+
+		
+	<!-- a7广告 -->
+	<div class="a7-wrap">
+		<a href="javascript:;"><img src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/51ad5a4da09b5.jpg" alt="该广告已过期"></a>	</div>
+	<!-- /a7广告 -->
+	<!-- 热点推荐 -->
+<div class="box ranking hot-rec">
+	<div class="index-hd">
+		<div class="title"> 
+			<i class="t-icon"></i><em>热点推荐</em>
+		</div>
+	</div>
+	<ul class="bd ellipsis">
+		<li class="top3"><i>1</i><a title="ThinkPHP3.1.3视频教程" href="http://www.thinkphp.cn/document/313.html">ThinkPHP3.1.3视频教程</a></li><li class="top3"><i>2</i><a title="ThinkPHP3.1快速入门教程（更新中）" href="http://www.thinkphp.cn/document/155.html">ThinkPHP3.1快速入门教程（更新中）</a></li><li class="top3"><i>3</i><a title="ThinkPHP3.1快速入门（1）基础" href="http://www.thinkphp.cn/document/60.html">ThinkPHP3.1快速入门（1）基础</a></li><li><i>4</i><a title="ThinkPHP函数详解：I方法" href="http://www.thinkphp.cn/document/308.html">ThinkPHP函数详解：I方法</a></li><li><i>5</i><a title="ThinkPHP函数详解：U方法" href="http://www.thinkphp.cn/document/132.html">ThinkPHP函数详解：U方法</a></li>	</ul>
+</div>
+<!-- /热点推荐 -->
+		<div class="a6">
+		
+			<script async="" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/adsbygoogle.js.下载"></script>
+
+<ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-2076739524120221" data-ad-slot="8248687447" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display:inline-table;border:none;height:250px;margin:0;padding:0;position:relative;visibility:visible;width:250px;background-color:transparent;"><ins id="aswift_0_anchor" style="display:block;border:none;height:250px;margin:0;padding:0;position:relative;visibility:visible;width:250px;background-color:transparent;"><iframe width="250" height="250" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;width:250px;height:250px;" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/saved_resource.html"></iframe></ins></ins></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({ });
+</script>
+		</div>
+<!-- 最新更新 -->
+<div class="box ranking lupd">
+	<div class="index-hd">
+		<div class="title"> 
+			<i class="t-icon"></i><em>最新更新</em>
+		</div>
+	</div>
+	<ul class="bd ellipsis">
+		<li class="top3"><i>1</i><a title="ThinkPHP5.0官方快速入门系列教程" href="http://www.thinkphp.cn/document/499.html">ThinkPHP5.0官方快速入门系列教程</a></li><li class="top3"><i>2</i><a title="ThinkPHP5.0控制器从入门到精通" href="http://www.thinkphp.cn/document/498.html">ThinkPHP5.0控制器从入门到精通</a></li><li class="top3"><i>3</i><a title="ThinkPHP5.0路由完全指南" href="http://www.thinkphp.cn/document/497.html">ThinkPHP5.0路由完全指南</a></li><li><i>4</i><a title="ThinkPHP5.0快速入门" href="http://www.thinkphp.cn/document/496.html">ThinkPHP5.0快速入门</a></li><li><i>5</i><a title="ThinkPHP5.0视频教程" href="http://www.thinkphp.cn/document/495.html">ThinkPHP5.0视频教程</a></li>	</ul>
+</div>
+<!-- /最新更新 -->
+
+
+		
+
+		
+
+	</div>
+	<!-- /边栏 -->
+</div>
+<!-- 主体 -->
+
+<!-- 分享脚本 -->
+
+	<script type="text/javascript">
+	var title,url;
+    $('.share a').click(function(){
+        var ele = $(this).closest('.think-info').find('.tihead h3 a');
+        title = encodeURIComponent("ThinkPHP函数详解：I方法");
+        url   = encodeURIComponent(document.location);
+        window.open( eval($(this).attr('class') + '()') , "_blank" ,"width=680,height=430,scrollbars=no,location=no" ) ;
+    });
+	</script>
+
+<!-- /分享脚本 -->
+
+<script type="text/javascript">
+//腾讯微博分享
+function tencent(){
+    var param = [
+        'c=share',
+        'a=index',
+        'url=' + url,
+        'appkey=801098607',
+        'title=' + title
+    ].join('&');
+    return 'http://share.v.t.qq.com/index.php?' + param;
+}
+
+//新浪微博分享
+function sina(){
+    var param = [
+        'url=' + url,
+        'appkey=3891435835',
+        'title=' + title
+    ].join('&');
+    return 'http://service.weibo.com/share/share.php?' + param;
+}
+
+$(function(){
+	//选项卡切换效果
+	$(".tab-nav .item").click(function(){
+		$(".tab-nav .item").removeClass("selected");
+		$(".item-content").hide();
+		$("#" + $(this).addClass("selected").data("target")).show();
+	});
+	$(".tab-nav .item").first().click();
+
+	var tabTop = $("#tabbar").offset().top - 70;
+	$(".sn-wrap .c-cmt").click(
+	    function(){ $('html,body').animate({scrollTop:tabTop},700);
+	})
+})
+</script>
+
+<!-- 底部 -->
+<!-- 底部 -->
+<div class="footer">
+	<div class="ft-main cf">
+		<div class="ft-col">
+			<h3>我们</h3>
+			<ul>
+				<li><a href="http://www.thinkphp.cn/about/index.html">关于我们</a></li>
+				<li><a href="http://www.thinkphp.cn/7year.html">公司动态</a></li>
+				<li><a href="http://www.thinkphp.cn/about/contact.html">联系我们</a></li>
+				<li><a href="http://www.thinkphp.cn/about/disclaimer.html">免责声明</a></li>
+				<li><a href="http://www.thinkphp.cn/about/join_us.html">加入我们</a></li>
+				<li><a href="http://www.thinkphp.cn/about/donate.html">捐赠我们</a></li>
+			</ul>
+		</div>
+		<div class="ft-col">
+			<h3>合作</h3>
+			<ul>
+				<li><a href="http://www.thinkphp.cn/cooperation/training.html">技术培训</a></li>
+				<li><a href="http://www.thinkphp.cn/cooperation/adcoop.html">广告合作</a></li>
+				<li><a href="http://www.thinkphp.cn/cooperation/projectcoop.html">项目合作</a></li>
+				<li><a href="http://www.thinkphp.cn/cooperation/investcoop.html">投资合作</a></li>
+				<li><a href="http://www.thinkphp.cn/cooperation/partner.html">合作伙伴</a></li>
+				<li><a href="http://www.thinkphp.cn/cooperation/bussiness.html">商务合作</a></li>
+			</ul>
+		</div>
+		<div class="ft-col">
+			<h3>网站</h3>
+			<ul>
+				<li><a href="http://www.thinkphp.cn/rss.html">RSS订阅</a></li>
+				<li><a href="http://www.thinkphp.cn/help/contribute.html">投稿指南</a></li>
+				<li><a href="http://www.thinkphp.cn/help/sitehelp.html">网站帮助</a></li>
+				<li><a href="http://www.thinkphp.cn/link/index.html">友情链接</a></li>
+			</ul>
+		</div>
+		<div class="ft-col">
+			<h3>信息</h3>
+			<ul>
+				<li><a href="http://www.thinkphp.cn/update/index.html">更新列表</a></li>
+				<li><a href="http://www.thinkphp.cn/bug/index.html">BUG反馈</a></li>
+				<li><a href="http://www.thinkphp.cn/topic/index.html">技术讨论</a></li>
+				<li><a href="http://www.thinkphp.cn/info/index.html">教程资讯</a></li>
+			</ul>
+		</div>
+		<div class="ft-intro">
+			<div class="btm-logo">
+				<p>ThinkPHP 是一个免费开源的，快速、简单的面向对象的 轻量级PHP开发框架 ，创立于2006年初，遵循Apache2开源协议发布，是为了敏捷WEB应用开发和简化企业应用开发而诞生的。ThinkPHP从诞生以来一直秉承简洁实用的设计原则，在保持出色的性能和至简的代码的同时，也注重易用性。并且拥有众多的原创功能和特性，在社区团队的积极参与下，在易用性、扩展性和性能方面不断优化和改进，已经成长为国内最领先和最具影响力的WEB应用开发框架，众多的典型案例确保可以稳定用于商业以及门户级的开发。</p>
+				<div class="copyright">沪ICP备12007941号-2<a style="margin-left: 25px" href="http://www.topthink.net/" target="_blank">本网站由顶想科技维护支持</a></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /底部 -->
+
+<div class="hidden">
+    <script charset="UTF-8" src="./ThinkPHP函数详解：I方法 - ThinkPHP框架_files/stats" type="text/javascript"></script>
+</div>
+
+
+<!-- /底部 --><div id="gotoTop" style="display: block;">返回顶部</div></body></html>

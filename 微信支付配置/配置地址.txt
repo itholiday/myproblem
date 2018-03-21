@@ -1,0 +1,4 @@
+http://xlsheep.4e3a.cn/Home/Wxpay/pay
+http://xlsheep.4e3a.cn/Home/Wxpaycz/pay
+http://xlsheep.4e3a.cn/Home/Wxpayjr/pay
+http://xlsheep.4e3a.cn/Home/Wxpayupgrade/pay
